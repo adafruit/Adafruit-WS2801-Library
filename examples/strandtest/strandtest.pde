@@ -8,9 +8,9 @@ Example sketch for driving WS2801 pixels
 // Can be any valid output pins.
 // The colors of the wires may be totally different so
 // BE SURE TO CHECK YOUR PIXELS TO SEE WHICH WIRES TO USE!
-int dataPin = 3;       
-int clockPin = 2;      
-// Don't forget to connect 'white' to ground and 'black' to +5V
+int dataPin = 2;       
+int clockPin = 3;      
+// Don't forget to connect the ground wire to Arduino ground, and the +5V wire to a +5V supply
 
 
 // Set the first variable to the NUMBER of pixels. 25 = 25 pixels in a row
