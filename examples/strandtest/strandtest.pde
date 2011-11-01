@@ -8,8 +8,8 @@ Example sketch for driving WS2801 pixels
 // Can be any valid output pins.
 // The colors of the wires may be totally different so
 // BE SURE TO CHECK YOUR PIXELS TO SEE WHICH WIRES TO USE!
-int dataPin = 4;       // 'blue' wire
-int clockPin = 3;      // 'red' wire
+int dataPin = 3;       
+int clockPin = 2;      
 // Don't forget to connect 'white' to ground and 'black' to +5V
 
 
