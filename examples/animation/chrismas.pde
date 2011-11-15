@@ -2,7 +2,11 @@
 
 /*****************************************************************************
 Example sketch for driving WS2801 pixels
+by michu@pixelinvaders.ch - www.pixelinvaders.ch
 *****************************************************************************/
+
+//TODO: scoll in both directions
+//      color matcher
 
 // Choose which 2 pins you will use for output.
 // Can be any valid output pins.
@@ -14,14 +18,17 @@ int clockPin = 3;
 
 
 struct anim {
-  byte ofs;
-  byte pos;
-  byte del;
-  byte length;
+  uint8_t ofs;
+  uint8_t pos;
+  uint8_t del;
+  uint8_t length;
   uint32_t col;
 };
 
 anim mover;
+uint8_t clearColR;
+uint8_t clearColG;
+uint8_t clearColB;
 uint32_t clearCol;
 
 // Set the first variable to the NUMBER of pixels. 25 = 25 pixels in a row
@@ -30,15 +37,13 @@ WS2801 strip = WS2801(64, dataPin, clockPin);
 void setup() {
   strip.begin();
   
+  fadeToNewColor();
   newAnimation();
-  
-  // Update the strip, to start they are all 'off'
-  strip.show();
 }
 
 
 void loop() {
-  if (mover.pos > 0 && mover.pos == mover.del) {
+  if ((mover.pos > 0 && mover.pos == mover.del) || mover.pos > strip.numPixels()) {
     newAnimation();
   }
   
@@ -56,23 +61,58 @@ void loop() {
     }      
   }
   
-  delay(20);
   strip.show(); 
+  delay(20);
 }
 
+
+//init a new line animation
 void newAnimation() {
-  mover.ofs = random(strip.numPixels()); 
-  mover.length = random( strip.numPixels()-mover.ofs ); 
+  fadeToNewColor();
+  
+  mover.length = 0;
+  while (mover.length<16) {
+    mover.ofs = random(strip.numPixels()); 
+    mover.length = random( strip.numPixels()-mover.ofs ); 
+  }
   mover.pos = 0;
   mover.del = 0;
-  mover.col = Color(random(150), random(150), random(250));
+  mover.col = Color(random(200), random(200), random(250));  
+}
+
+//fade currentbackground color to next, random color
+void fadeToNewColor() {
+  uint8_t oldR = clearColR;
+  uint8_t oldG = clearColG;
+  uint8_t oldB = clearColB;
+
+  clearColR = random(70);
+  clearColG = random(70);
+  clearColB = random(90);
+  clearCol = Color(clearColR, clearColG, clearColB);
   
+  int steps = 25;
+  float stepsR = (clearColR-oldR)/(float)steps;
+  float stepsG = (clearColG-oldG)/(float)steps;
+  float stepsB = (clearColB-oldB)/(float)steps;
+
+  for (int s=0; s<steps+1; s++) {
+    uint8_t rr=oldR+stepsR*s;    
+    uint8_t gg=oldG+stepsG*s;
+    uint8_t bb=oldB+stepsB*s;
+    uint32_t c = Color(rr, gg, bb);
+    
+    for (int i=0; i < strip.numPixels(); i++) {
+      strip.setPixelColor(i, c);
+    }
+    strip.show(); 
+    delay(20);
+  }
   
-  clearCol = Color(random(50), random(50), random(50));
 }
 
 // Create a 24 bit color value from R,G,B
-uint32_t Color(byte r, byte g, byte b) {
+uint32_t Color(uint8_t r, uint8_t g, uint8_t b) {
   uint32_t c;
   c = r;
   c <<= 8;
