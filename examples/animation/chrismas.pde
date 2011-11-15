@@ -16,6 +16,7 @@ int dataPin = 2;
 int clockPin = 3;      
 // Don't forget to connect the ground wire to Arduino ground, and the +5V wire to a +5V supply
 
+static uint8_t DELAY = 50;
 
 struct anim {
   uint8_t ofs;
@@ -62,7 +63,7 @@ void loop() {
   }
   
   strip.show(); 
-  delay(20);
+  delay(DELAY);
 }
 
 
@@ -106,7 +107,7 @@ void fadeToNewColor() {
       strip.setPixelColor(i, c);
     }
     strip.show(); 
-    delay(20);
+    delay(DELAY);
   }
   
 }
