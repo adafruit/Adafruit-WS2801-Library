@@ -2,10 +2,8 @@
 
 // Example to control WS2801-based RGB LED Modules in a strand or strip
 // Written by Adafruit - MIT license
-// Updated by michu@neophob.com 2011 - http://www.pixelinvaders.ch
 /*****************************************************************************/
 
-static byte lastdata = 0;
 
 WS2801::WS2801(uint16_t n, uint8_t dpin, uint8_t cpin) {
   dataPin = dpin;
@@ -39,15 +37,10 @@ void WS2801::show(void) {
 	// 24 bits of data per pixel
         for (int32_t i=0x800000; i>0; i>>=1) {
             digitalWrite(clockPin, LOW);
-            if (data & i) {
-            	if (!lastdata) {
-    	            digitalWrite(dataPin, HIGH);
-	                lastdata = 1;            		
-            	}
-            } else if (lastdata) {
+            if (data & i)
+                digitalWrite(dataPin, HIGH);
+            else
                 digitalWrite(dataPin, LOW);
-                lastdata = 0;
-            }
             digitalWrite(clockPin, HIGH);    // latch on clock rise
         }
     }
