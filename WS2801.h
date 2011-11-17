@@ -1,13 +1,21 @@
-#include <WProgram.h>
+#if (ARDUINO <= 22)
+ #include <WProgram.h>
+ #include <pins_arduino.h>
+#else
+ #include <Arduino.h>
+#endif
 
 class WS2801 {
  private:
-    // the arrays of int32s that hold each LED's 24 bit color values
-    uint32_t *pixels;
-    uint16_t numLEDs;
-    uint8_t dataPin, clockPin;
+  uint8_t *pixels; // Holds color values for each LED (3 bytes each)
+  uint16_t numLEDs;
+  uint8_t dataPin, clockPin;
+  volatile uint8_t *clkportreg, *mosiportreg;
+  uint8_t clkpin, mosipin;
+  boolean hardwareSPI;
  public:
-  WS2801(uint16_t n, uint8_t dpin, uint8_t cpin);
+  WS2801(uint16_t n, uint8_t dpin, uint8_t cpin); // Configurable pins
+  WS2801(uint16_t n); // Use SPI hardware; specific pins only
   void begin();
   void show();
   void setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b);

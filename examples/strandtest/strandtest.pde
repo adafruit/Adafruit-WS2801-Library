@@ -1,3 +1,4 @@
+#include "SPI.h"
 #include "WS2801.h"
 
 /*****************************************************************************
@@ -15,6 +16,10 @@ int clockPin = 3;
 
 // Set the first variable to the NUMBER of pixels. 25 = 25 pixels in a row
 WS2801 strip = WS2801(25, dataPin, clockPin);
+
+// Optional: leave off pin #s to use hardware SPI
+// (pinout is then specific to each board and can't be changed)
+//WS2801 strip = WS2801(25);
 
 void setup() {
     
