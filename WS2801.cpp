@@ -1,25 +1,55 @@
 #include "WS2801.h"
+#include "SPI.h"
+#include "wiring_private.h"
 
 // Example to control WS2801-based RGB LED Modules in a strand or strip
 // Written by Adafruit - MIT license
 /*****************************************************************************/
 
+WS2801::WS2801(uint16_t n) {
+  // Use hardware SPI
+  dataPin = clockPin = 0;
+  hardwareSPI = true;
+
+  numLEDs = n;
+
+  // malloc 3 bytes per pixel so we dont have to hardcode the length
+  pixels = (uint8_t *)malloc(numLEDs * 3); // 3 bytes per pixel
+  memset(pixels, 0, numLEDs * 3); // Init to RGB 'off' state
+}
 
 WS2801::WS2801(uint16_t n, uint8_t dpin, uint8_t cpin) {
   dataPin = dpin;
   clockPin = cpin;
   numLEDs = n;
 
-  pixels = (uint32_t *)malloc(numLEDs);
-  for (uint16_t i=0; i< numLEDs; i++) {
-    setPixelColor(i, 0, 0, 0);
-  }
+  clkportreg = portOutputRegister(digitalPinToPort(cpin));
+  clkpin = digitalPinToBitMask(cpin);
+  mosiportreg = portOutputRegister(digitalPinToPort(dpin));
+  mosipin = digitalPinToBitMask(dpin);
 
+  // malloc 3 bytes per pixel so we dont have to hardcode the length
+  pixels = (uint8_t *)malloc(numLEDs * 3); // 3 bytes per pixel
+  memset(pixels, 0, numLEDs * 3); // Init to RGB 'off' state
 }
 
 void WS2801::begin(void) {
   pinMode(dataPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
+
+  if (hardwareSPI) {
+    // using hardware SPI
+    SPI.begin();
+    SPI.setBitOrder(MSBFIRST);
+    SPI.setDataMode(SPI_MODE0);
+    SPI.setClockDivider(SPI_CLOCK_DIV8);  // 2 MHz
+    // WS2801 datasheet recommends max SPI clock of 2 MHz, and 50 Ohm
+    // resistors on SPI lines for impedance matching.  In practice and
+    // at short distances, 2 MHz seemed to work reliably enough without
+    // resistors, and 4 MHz was possible with a 220 Ohm resistor on the
+    // SPI clock line only.  Your mileage may vary.  Experiment!
+    // SPI.setClockDivider(SPI_CLOCK_DIV4);  // 4 MHz
+  }
 }
 
 uint16_t WS2801::numPixels(void) {
@@ -27,45 +57,50 @@ uint16_t WS2801::numPixels(void) {
 }
 
 void WS2801::show(void) {
-    uint32_t data;
-    digitalWrite(clockPin, LOW);
-    delay(1);
-    
-    // send all the pixels
-    for (uint16_t p=0; p< numLEDs; p++) {
-        data = pixels[p];
-	// 24 bits of data per pixel
-        for (int32_t i=0x800000; i>0; i>>=1) {
-            digitalWrite(clockPin, LOW);
-            if (data & i)
-                digitalWrite(dataPin, HIGH);
-            else
-                digitalWrite(dataPin, LOW);
-            digitalWrite(clockPin, HIGH);    // latch on clock rise
-        }
+  uint16_t i, nl3 = numLEDs * 3; // 3 bytes per LED
+  uint8_t bit;
+
+  // write 24 bits per pixel
+  if (hardwareSPI) {
+    for (i=0; i<nl3; i++ ) {
+      SPDR = pixels[i];
+      while (!(SPSR & (1<<SPIF))) {};
     }
-    // when we're done we hold the clock pin low for a millisecond to latch it
-    digitalWrite(clockPin, LOW);
-    delay(1);
+  } else {
+    for (i=0; i<nl3; i++ ) {
+      for (bit=0x80; bit; bit >>= 1) {
+        *clkportreg &= ~clkpin;
+        if (pixels[i] & bit) {
+          *mosiportreg |= mosipin;
+        } else {
+          *mosiportreg &= ~mosipin;
+        }
+        *clkportreg |= clkpin;
+      }
+    }
+    *clkportreg &= ~clkpin;
+  }
+
+  // when we're done we hold the clock pin low for a millisecond to latch it
+  delay(1);
 }
 
 void WS2801::setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b) {
-  uint32_t data;
+  if (n >= numLEDs) return; // '>=' because arrays are 0-indexed
 
-  if (n > numLEDs) return;
-
-  data = g;
-  data <<= 8;
-  data |= b;
-  data <<= 8;
-  data |= r;
-  
-  pixels[n] = data;
+  n *= 3;
+  pixels[n++] = r;
+  pixels[n++] = g;
+  pixels[n  ] = b;
 }
 
 void WS2801::setPixelColor(uint16_t n, uint32_t c) {
-  if (n > numLEDs) return;
+  if (n >= numLEDs) return; // '>=' because arrays are 0-indexed
 
-  pixels[n] = c & 0xFFFFFF;
+  n *= 3;
+  pixels[n++] = c >> 16;
+  pixels[n++] = c >> 8;
+  pixels[n  ] = c;
+
 }
 
