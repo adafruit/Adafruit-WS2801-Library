@@ -1,4 +1,4 @@
-#if (ARDUINO <= 22)
+#if (ARDUINO <= 23)
  #include <WProgram.h>
  #include <pins_arduino.h>
 #else
