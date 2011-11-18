@@ -1,3 +1,4 @@
+#include "SPI.h"
 #include "WS2801.h"
 #include "SPI.h"
 #include "wiring_private.h"
