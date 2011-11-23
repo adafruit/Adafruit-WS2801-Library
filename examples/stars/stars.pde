@@ -41,9 +41,7 @@ void setup() {
 
   for (int i=0; i < strip.numPixels(); i++) {
     if (random(RND)==2) {
-      stars[i].endCol = random(0xffffff);
-      stars[i].pos = 1;
-      stars[i].currentCol=0;
+      initStar(i);
     } else {
       stars[i].pos = 0;
     }      
@@ -57,19 +55,19 @@ void loop() {
   uint8_t endR, endG, endB;
   
   for (int i=0; i < strip.numPixels(); i++) {
-    //start a new fader, maybe
+    
+    // ====
+    // INIT
+    // ====
     if (stars[i].pos == 0) {
       if (random(RND)==2) {
-//        stars[i].endCol = random(0xffffff);
-        uint8_t rnd = random(192);
-        uint8_t rnd2 = random(64);
-        stars[i].endCol = Color(rnd+rnd2, rnd+rnd2, rnd2);
-        stars[i].pos = 1;
-        stars[i].currentCol=0;
+        initStar(i);
       }
     } else
 
-    //fade in    
+    // =======
+    // FADE IN
+    // =======
     if (stars[i].pos == 1) {
       
       //decrease color...
@@ -98,7 +96,9 @@ void loop() {
       stars[i].currentCol = Color(currentR, currentG, currentB);      
     } else 
 
-    //fade out
+    // ========
+    // FADE OUT
+    // ========
     if (stars[i].pos == 2) {
       //decrease color...
       uint32_t ccol = stars[i].currentCol;
@@ -119,11 +119,21 @@ void loop() {
       }
     }
     
+    //update color
     strip.setPixelColor(i, stars[i].currentCol);
   }
   
   strip.show(); 
   delay(DELAY);
+}
+
+//init new star
+void initStar(int i) {
+    uint8_t rnd = random(192);
+    uint8_t rnd2 = random(64);
+    stars[i].endCol = Color(rnd+rnd2, rnd+rnd2, rnd2);
+    stars[i].pos = 1;
+    stars[i].currentCol=0;  
 }
 
 
