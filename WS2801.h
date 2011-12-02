@@ -20,5 +20,6 @@ class WS2801 {
   void show();
   void setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b);
   void setPixelColor(uint16_t n, uint32_t c);
+  uint32_t getPixelColor(uint16_t n);
   uint16_t numPixels(void);
 };

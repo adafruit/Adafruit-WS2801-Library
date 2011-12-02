@@ -102,6 +102,19 @@ void WS2801::setPixelColor(uint16_t n, uint32_t c) {
   pixels[n++] = c >> 16;
   pixels[n++] = c >> 8;
   pixels[n  ] = c;
-
 }
+
+uint32_t WS2801::getPixelColor(uint16_t n) {
+   if (n >= numLEDs) return 0; // '>=' because arrays are 0-indexed
+  
+   n *= 3;
+   uint32_t ret = pixels[n++];
+   ret <<= 8;
+   ret |= pixels[n++];
+   ret <<= 8;
+   ret |= pixels[n];
+   return ret;
+}
+
+
 
