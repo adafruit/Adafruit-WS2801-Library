@@ -1,8 +1,8 @@
-#if (ARDUINO <= 23)
+#if (ARDUINO >= 100)
+ #include <Arduino.h>
+#else
  #include <WProgram.h>
  #include <pins_arduino.h>
-#else
- #include <Arduino.h>
 #endif
 
 class WS2801 {
