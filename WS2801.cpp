@@ -34,6 +34,17 @@ WS2801::WS2801(uint16_t n, uint8_t dpin, uint8_t cpin) {
   memset(pixels, 0, numLEDs * 3); // Init to RGB 'off' state
 }
 
+
+void WS2801::updatePins(uint8_t dpin, uint8_t cpin) {
+  dataPin = dpin;
+  clockPin = cpin;
+
+  clkportreg = portOutputRegister(digitalPinToPort(cpin));
+  clkpin = digitalPinToBitMask(cpin);
+  mosiportreg = portOutputRegister(digitalPinToPort(dpin));
+  mosipin = digitalPinToBitMask(dpin);
+}
+
 void WS2801::begin(void) {
   pinMode(dataPin, OUTPUT);
   pinMode(clockPin, OUTPUT);

@@ -18,6 +18,7 @@ class WS2801 {
   WS2801(uint16_t n); // Use SPI hardware; specific pins only
   void begin();
   void show();
+  void updatePins(uint8_t dpin, uint8_t cpin);
   void setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b);
   void setPixelColor(uint16_t n, uint32_t c);
   uint32_t getPixelColor(uint16_t n);
