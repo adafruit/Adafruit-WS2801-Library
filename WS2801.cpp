@@ -131,4 +131,3 @@ void WS2801::setPixelColor(uint16_t n, uint32_t c) {
     *p++ = c;
   }
 }
-
