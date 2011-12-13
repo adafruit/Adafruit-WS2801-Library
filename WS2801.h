@@ -1,26 +1,40 @@
-#if (ARDUINO <= 23)
+#if (ARDUINO >= 100)
+ #include <Arduino.h>
+#else
  #include <WProgram.h>
  #include <pins_arduino.h>
-#else
- #include <Arduino.h>
 #endif
 
 class WS2801 {
- private:
-  uint8_t *pixels; // Holds color values for each LED (3 bytes each)
-  uint16_t numLEDs;
-  uint8_t dataPin, clockPin;
-  volatile uint8_t *clkportreg, *mosiportreg;
-  uint8_t clkpin, mosipin;
-  boolean hardwareSPI;
+
  public:
+
   WS2801(uint16_t n, uint8_t dpin, uint8_t cpin); // Configurable pins
   WS2801(uint16_t n); // Use SPI hardware; specific pins only
-  void begin();
-  void show();
-  void updatePins(uint8_t dpin, uint8_t cpin);
-  void setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b);
-  void setPixelColor(uint16_t n, uint32_t c);
-  uint32_t getPixelColor(uint16_t n);
-  uint16_t numPixels(void);
+  void
+    begin(void),
+    show(void),
+    setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b),
+    setPixelColor(uint16_t n, uint32_t c),
+    updatePins(uint8_t dpin, uint8_t cpin), // Change pins, configurable
+    updatePins(void); // Change pins, hardware SPI
+  uint16_t
+    numPixels(void);
+
+ private:
+
+  uint16_t
+    numLEDs;
+  uint8_t
+    *pixels, // Holds color values for each LED (3 bytes each)
+    clkpin    , datapin,     // Clock & data pin numbers
+    clkpinmask, datapinmask; // Clock & data PORT bitmasks
+  volatile uint8_t
+    *clkport  , *dataport;   // Clock & data PORT registers
+  void
+    alloc(uint16_t n),
+    startSPI(void);
+  boolean
+    hardwareSPI, // If 'true', using hardware SPI
+    begun;       // If 'true', begin() method was previously invoked
 };

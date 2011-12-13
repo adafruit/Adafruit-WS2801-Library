@@ -11,13 +11,14 @@ Example sketch for driving WS2801 pixels
 // BE SURE TO CHECK YOUR PIXELS TO SEE WHICH WIRES TO USE!
 int dataPin = 2;
 int clockPin = 3;
-// Don't forget to connect the ground wire to Arduino ground, and the +5V wire to a +5V supply
+// Don't forget to connect the ground wire to Arduino ground,
+// and the +5V wire to a +5V supply
 
 
 // Set the first variable to the NUMBER of pixels. 25 = 25 pixels in a row
 WS2801 strip = WS2801(25, dataPin, clockPin);
 
-// Optional: leave off pin #s to use hardware SPI
+// Optional: leave off pin numbers to use hardware SPI
 // (pinout is then specific to each board and can't be changed)
 //WS2801 strip = WS2801(25);
 
@@ -25,7 +26,7 @@ void setup() {
     
   strip.begin();
 
-  // Update the strip, to start they are all 'off'
+  // Update LED contents, to start they are all 'off'
   strip.show();
 }
 
