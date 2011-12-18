@@ -20,7 +20,8 @@ class WS2801 {
     updatePins(void); // Change pins, hardware SPI
   uint16_t
     numPixels(void);
-
+  uint32_t
+    getPixelColor(uint16_t n);
  private:
 
   uint16_t
