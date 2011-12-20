@@ -5,6 +5,10 @@
 // Written by Adafruit - MIT license
 /*****************************************************************************/
 
+// Empty constructor
+WS2801::WS2801() {
+}
+
 // Constructor for use with hardware SPI (specific clock/data pins):
 WS2801::WS2801(uint16_t n) {
   alloc(n);

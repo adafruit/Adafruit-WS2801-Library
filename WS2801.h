@@ -9,6 +9,7 @@ class WS2801 {
 
  public:
 
+  WS2801();
   WS2801(uint16_t n, uint8_t dpin, uint8_t cpin); // Configurable pins
   WS2801(uint16_t n); // Use SPI hardware; specific pins only
   void
