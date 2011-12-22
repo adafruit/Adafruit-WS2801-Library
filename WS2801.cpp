@@ -5,6 +5,10 @@
 // Written by Adafruit - MIT license
 /*****************************************************************************/
 
+// Empty constructor
+WS2801::WS2801() {
+}
+
 // Constructor for use with hardware SPI (specific clock/data pins):
 WS2801::WS2801(uint16_t n) {
   alloc(n);
@@ -131,4 +135,16 @@ void WS2801::setPixelColor(uint16_t n, uint32_t c) {
     *p++ = c;
   }
 }
+
+//return value
+uint32_t WS2801::getPixelColor(uint16_t n) {
+  if(n >= numLEDs) {
+    return 0;
+  }
+
+  uint16_t ofs = n*3;
+  uint32_t ret = pixels[ofs] << 16 | pixels[ofs+1] << 8 | pixels[ofs+2];
+  return ret;
+}
+
 

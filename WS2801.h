@@ -9,6 +9,7 @@ class WS2801 {
 
  public:
 
+  WS2801();
   WS2801(uint16_t n, uint8_t dpin, uint8_t cpin); // Configurable pins
   WS2801(uint16_t n); // Use SPI hardware; specific pins only
   void
@@ -20,7 +21,8 @@ class WS2801 {
     updatePins(void); // Change pins, hardware SPI
   uint16_t
     numPixels(void);
-
+  uint32_t
+    getPixelColor(uint16_t n);
  private:
 
   uint16_t
