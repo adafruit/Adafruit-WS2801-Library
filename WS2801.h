@@ -11,15 +11,19 @@ class WS2801 {
 
   WS2801(uint16_t n, uint8_t dpin, uint8_t cpin); // Configurable pins
   WS2801(uint16_t n); // Use SPI hardware; specific pins only
+  WS2801(void); // Empty constructor; init pins/strand length later
   void
     begin(void),
     show(void),
     setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b),
     setPixelColor(uint16_t n, uint32_t c),
     updatePins(uint8_t dpin, uint8_t cpin), // Change pins, configurable
-    updatePins(void); // Change pins, hardware SPI
+    updatePins(void), // Change pins, hardware SPI
+    updateLength(uint16_t n); // Change strand length
   uint16_t
     numPixels(void);
+  uint32_t
+    getPixelColor(uint16_t n);
 
  private:
 
