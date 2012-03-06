@@ -6,13 +6,15 @@
 /*****************************************************************************/
 
 // Constructor for use with hardware SPI (specific clock/data pins):
-WS2801::WS2801(uint16_t n) {
+WS2801::WS2801(uint16_t n, uint8_t order) {
+  rgb_order = order;
   alloc(n);
   updatePins();
 }
 
 // Constructor for use with arbitrary clock/data pins:
-WS2801::WS2801(uint16_t n, uint8_t dpin, uint8_t cpin) {
+WS2801::WS2801(uint16_t n, uint8_t dpin, uint8_t cpin, uint8_t order) {
+  rgb_order = order;
   alloc(n);
   updatePins(dpin, cpin);
 }
@@ -28,10 +30,12 @@ void WS2801::alloc(uint16_t n) {
 // read from internal flash memory or an SD card, or arrive via serial
 // command.  If using this constructor, MUST follow up with updateLength()
 // and updatePins() to establish the strand length and output pins!
+// Also, updateOrder() to change RGB vs GRB order (RGB is default).
 WS2801::WS2801(void) {
-  begun   = false;
-  numLEDs = 0;
-  pixels  = NULL;
+  begun     = false;
+  numLEDs   = 0;
+  pixels    = NULL;
+  rgb_order = WS2801_RGB;
   updatePins(); // Must assume hardware SPI until pins are set
 }
 
@@ -107,6 +111,13 @@ void WS2801::updateLength(uint16_t n) {
   // 'begun' state does not change -- pins retain prior modes
 }
 
+// Change RGB data order (see notes with empty constructor, above):
+void WS2801::updateOrder(uint8_t order) {
+  rgb_order = order;
+  // Existing LED data, if any, is NOT reformatted to new data order.
+  // Calling function should clear or fill pixel data anew.
+}
+
 void WS2801::show(void) {
   uint16_t i, nl3 = numLEDs * 3; // 3 bytes per LED
   uint8_t  bit;
@@ -135,8 +146,14 @@ void WS2801::show(void) {
 void WS2801::setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b) {
   if(n < numLEDs) { // Arrays are 0-indexed, thus NOT '<='
     uint8_t *p = &pixels[n * 3];
-    *p++ = r;
-    *p++ = g;
+    // See notes later regarding color order
+    if(rgb_order == WS2801_RGB) {
+      *p++ = r;
+      *p++ = g;
+    } else {
+      *p++ = g;
+      *p++ = r;
+    }
     *p++ = b;
   }
 }
@@ -145,9 +162,18 @@ void WS2801::setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b) {
 void WS2801::setPixelColor(uint16_t n, uint32_t c) {
   if(n < numLEDs) { // Arrays are 0-indexed, thus NOT '<='
     uint8_t *p = &pixels[n * 3];
-    *p++ = c >> 16;
-    *p++ = c >>  8;
-    *p++ = c;
+    // To keep the show() loop as simple & fast as possible, the
+    // internal color representation is native to different pixel
+    // types.  For compatibility with existing code, 'packed' RGB
+    // values passed in or out are always 0xRRGGBB order.
+    if(rgb_order == WS2801_RGB) {
+      *p++ = c >> 16; // Red
+      *p++ = c >>  8; // Green
+    } else {
+      *p++ = c >>  8; // Green
+      *p++ = c >> 16; // Red
+    }
+    *p++ = c;         // Blue
   }
 }
 
@@ -155,9 +181,13 @@ void WS2801::setPixelColor(uint16_t n, uint32_t c) {
 uint32_t WS2801::getPixelColor(uint16_t n) {
   if(n < numLEDs) {
     uint16_t ofs = n * 3;
-    return (pixels[ofs    ] << 16) | 
-           (pixels[ofs + 1] <<  8) |
-            pixels[ofs + 2];
+    // To keep the show() loop as simple & fast as possible, the
+    // internal color representation is native to different pixel
+    // types.  For compatibility with existing code, 'packed' RGB
+    // values passed in or out are always 0xRRGGBB order.
+    return (rgb_order == WS2801_RGB) ?
+      (pixels[ofs] << 16) | (pixels[ofs + 1] <<  8) | pixels[ofs + 2] :
+      (pixels[ofs] <<  8) | (pixels[ofs + 1] << 16) | pixels[ofs + 2];
   }
 
   return 0; // Pixel # is out of bounds
