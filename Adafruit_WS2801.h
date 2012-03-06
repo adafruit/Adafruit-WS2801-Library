@@ -13,16 +13,16 @@
 #define WS2801_RGB 0
 #define WS2801_GRB 1
 
-class WS2801 {
+class Adafruit_WS2801 {
 
  public:
 
   // Configurable pins:
-  WS2801(uint16_t n, uint8_t dpin, uint8_t cpin, uint8_t order=WS2801_RGB);
+  Adafruit_WS2801(uint16_t n, uint8_t dpin, uint8_t cpin, uint8_t order=WS2801_RGB);
   // Use SPI hardware; specific pins only:
-  WS2801(uint16_t n, uint8_t order=WS2801_RGB);
+  Adafruit_WS2801(uint16_t n, uint8_t order=WS2801_RGB);
   // Empty constructor; init pins/strand length/data order later:
-  WS2801();
+  Adafruit_WS2801();
 
   void
     begin(void),
