@@ -1,5 +1,5 @@
 #include "SPI.h"
-#include "WS2801.h"
+#include "Adafruit_WS2801.h"
 
 // Example to control WS2801-based RGB LED Modules in a strand or strip
 // Written by Adafruit - MIT license

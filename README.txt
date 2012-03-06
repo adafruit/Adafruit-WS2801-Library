@@ -19,6 +19,6 @@ Example library for driving Adafruit WS2801 pixels!
 
 -------------------------------------
 
-To download. click the DOWNLOADS button in the top right corner, rename the uncompressed folder WS2801. Check that the WS2801 folder contains WS2801.cpp and WS2801.h
+To download. click the DOWNLOADS button in the top right corner, rename the uncompressed folder Adafruit_WS2801. Check that the WS2801 folder contains Adafruit_WS2801.cpp and Adafruit_WS2801.h
 
-Place the WS2801 library folder your <arduinosketchfolder>/libraries/ folder. You may need to create the libraries subfolder if its your first library. Restart the IDE.
+Place the Adafruit_WS2801 library folder your <arduinosketchfolder>/libraries/ folder. You may need to create the libraries subfolder if its your first library. Restart the IDE.
