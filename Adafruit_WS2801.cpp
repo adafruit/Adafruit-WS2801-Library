@@ -90,13 +90,7 @@ void Adafruit_WS2801::startSPI(void) {
     SPI.begin();
     SPI.setBitOrder(MSBFIRST);
     SPI.setDataMode(SPI_MODE0);
-    SPI.setClockDivider(SPI_CLOCK_DIV8);  // 2 MHz
-    // WS2801 datasheet recommends max SPI clock of 2 MHz, and 50 Ohm
-    // resistors on SPI lines for impedance matching.  In practice and
-    // at short distances, 2 MHz seemed to work reliably enough without
-    // resistors, and 4 MHz was possible with a 220 Ohm resistor on the
-    // SPI clock line only.  Your mileage may vary.  Experiment!
-    // SPI.setClockDivider(SPI_CLOCK_DIV4);  // 4 MHz
+    SPI.setClockDivider(SPI_CLOCK_DIV16); // 1 MHz max, else flicker
 }
 
 uint16_t Adafruit_WS2801::numPixels(void) {
