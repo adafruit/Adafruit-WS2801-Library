@@ -180,8 +180,8 @@ uint32_t Adafruit_WS2801::getPixelColor(uint16_t n) {
     // types.  For compatibility with existing code, 'packed' RGB
     // values passed in or out are always 0xRRGGBB order.
     return (rgb_order == WS2801_RGB) ?
-      (pixels[ofs] << 16) | (pixels[ofs + 1] <<  8) | pixels[ofs + 2] :
-      (pixels[ofs] <<  8) | (pixels[ofs + 1] << 16) | pixels[ofs + 2];
+      ((uint32_t)pixels[ofs] << 16) | (pixels[ofs + 1] <<  8) | pixels[ofs + 2] :
+      (pixels[ofs] <<  8) | ((uint32_t)pixels[ofs + 1] << 16) | pixels[ofs + 2];
   }
 
   return 0; // Pixel # is out of bounds
