@@ -39,6 +39,13 @@ Adafruit_WS2801::Adafruit_WS2801(void) {
   updatePins(); // Must assume hardware SPI until pins are set
 }
 
+// Release memory (as needed):
+Adafruit_WS2801::~Adafruit_WS2801(void) {
+  if (pixels != NULL) {
+    free(pixels);
+  }
+}
+
 // Activate hard/soft SPI as appropriate:
 void Adafruit_WS2801::begin(void) {
   if(hardwareSPI == true) {
