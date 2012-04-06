@@ -23,6 +23,8 @@ class Adafruit_WS2801 {
   Adafruit_WS2801(uint16_t n, uint8_t order=WS2801_RGB);
   // Empty constructor; init pins/strand length/data order later:
   Adafruit_WS2801();
+  // Release memory (as needed):
+  ~Adafruit_WS2801();
 
   void
     begin(void),
