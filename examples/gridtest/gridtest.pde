@@ -18,7 +18,7 @@ Example sketch for driving Adafruit WS2801 pixels!
   please support Adafruit and open-source hardware by purchasing 
   products from Adafruit!
 
-  Written by Limor Fried/Ladyada for Adafruit Industries.  
+  Written by David Kavanagh (dkavanagh@gmail.com).  
   BSD license, all text above must be included in any redistribution
 
 *****************************************************************************/
@@ -33,21 +33,9 @@ int clockPin = 3;    // Green wire on Adafruit Pixels
 // Don't forget to connect the ground wire to Arduino ground,
 // and the +5V wire to a +5V supply
 
-// Set the first variable to the NUMBER of pixels. 25 = 25 pixels in a row
-Adafruit_WS2801 strip = Adafruit_WS2801(7, dataPin, clockPin);
-
-// Optional: leave off pin numbers to use hardware SPI
-// (pinout is then specific to each board and can't be changed)
-//Adafruit_WS2801 strip = Adafruit_WS2801(25);
-
-// For 36mm LED pixels: these pixels internally represent color in a
-// different format.  Either of the above constructors can accept an
-// optional extra parameter: WS2801_RGB is 'conventional' RGB order
-// WS2801_GRB is the GRB order required by the 36mm pixels.  Other
-// than this parameter, your code does not need to do anything different;
-// the library will handle the format change.  Examples:
-//Adafruit_WS2801 strip = Adafruit_WS2801(25, dataPin, clockPin, WS2801_GRB);
-//Adafruit_WS2801 strip = Adafruit_WS2801(25, WS2801_GRB);
+// Set the first variable to the NUMBER of pixels in a row and
+// the second value to number of pixels in a column.
+Adafruit_WS2801 strip = Adafruit_WS2801((uint16_t)7, (uint16_t)7, dataPin, clockPin);
 
 void setup() {
     
@@ -60,53 +48,54 @@ void setup() {
 
 void loop() {
   // Some example procedures showing how to display to the pixels
-  
-  colorWipe(Color(255, 0, 0), 50);
-  colorWipe(Color(0, 255, 0), 50);
-  colorWipe(Color(0, 0, 255), 50);
-  rainbow(20);
-  rainbowCycle(20);
+  drawX(7, 7, 100);
+  bounce(7, 6, 50);
 }
 
-void rainbow(uint8_t wait) {
-  int i, j;
-   
-  for (j=0; j < 256; j++) {     // 3 cycles of all 256 colors in the wheel
-    for (i=0; i < strip.numPixels(); i++) {
-      strip.setPixelColor(i, Wheel( (i + j) % 255));
-    }  
-    strip.show();   // write all the pixels out
+void drawX(uint8_t w, uint8_t h, uint8_t wait) {
+  uint16_t x, y;
+  for (x=0; x<w; x++) {
+    strip.setPixelColor(x, x, 255, 0, 0);
+    strip.show();
     delay(wait);
   }
-}
-
-// Slightly different, this one makes the rainbow wheel equally distributed 
-// along the chain
-void rainbowCycle(uint8_t wait) {
-  int i, j;
-  
-  for (j=0; j < 256 * 5; j++) {     // 5 cycles of all 25 colors in the wheel
-    for (i=0; i < strip.numPixels(); i++) {
-      // tricky math! we use each pixel as a fraction of the full 96-color wheel
-      // (thats the i / strip.numPixels() part)
-      // Then add in j which makes the colors go around per pixel
-      // the % 96 is to make the wheel cycle around
-      strip.setPixelColor(i, Wheel( ((i * 256 / strip.numPixels()) + j) % 256) );
-    }  
-    strip.show();   // write all the pixels out
+  for (y=0; y<h; y++) {
+    strip.setPixelColor(w-1-y, y, 0, 0, 255);
+    strip.show();
     delay(wait);
   }
+
 }
 
-// fill the dots one after the other with said color
-// good for testing purposes
-void colorWipe(uint32_t c, uint8_t wait) {
-  int i;
-  
-  for (i=0; i < strip.numPixels(); i++) {
-      strip.setPixelColor(i, c);
-      strip.show();
-      delay(wait);
+void bounce(uint8_t w, uint8_t h, uint8_t wait) {
+  int16_t x = 1;
+  int16_t y = 2;
+  int8_t xdir = +1;
+  int8_t ydir = -1;
+  int j;
+  for (j=0; j < 256; j++) {
+     x = x + xdir;
+     y = y + ydir;
+     if (x < 0) {
+       x = -x;
+       xdir = - xdir;
+     }
+     if (y < 0) {
+       y = -y;
+       ydir = - ydir;
+     }
+     if (x == w) {
+       x = w-2;
+       xdir = - xdir;
+     }
+     if (y == h) {
+       y = h-2;
+       ydir = - ydir;
+     }
+     strip.setPixelColor(x, y, Wheel(j));
+     strip.show();
+     delay(wait);
+     strip.setPixelColor(x, y, 0, 0, 0);
   }
 }
 
