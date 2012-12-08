@@ -19,6 +19,7 @@ class Adafruit_WS2801 {
 
   // Configurable pins:
   Adafruit_WS2801(uint16_t n, uint8_t dpin, uint8_t cpin, uint8_t order=WS2801_RGB);
+  Adafruit_WS2801(uint16_t x, uint16_t y, uint8_t dpin, uint8_t cpin, uint8_t order=WS2801_RGB);
   // Use SPI hardware; specific pins only:
   Adafruit_WS2801(uint16_t n, uint8_t order=WS2801_RGB);
   // Empty constructor; init pins/strand length/data order later:
@@ -31,6 +32,8 @@ class Adafruit_WS2801 {
     show(void),
     setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b),
     setPixelColor(uint16_t n, uint32_t c),
+    setPixelColor(uint16_t x, uint16_t y, uint8_t r, uint8_t g, uint8_t b),
+    setPixelColor(uint16_t x, uint16_t y, uint32_t c),
     updatePins(uint8_t dpin, uint8_t cpin), // Change pins, configurable
     updatePins(void), // Change pins, hardware SPI
     updateLength(uint16_t n), // Change strand length
@@ -43,7 +46,9 @@ class Adafruit_WS2801 {
  private:
 
   uint16_t
-    numLEDs;
+    numLEDs,
+    width,     // used with matrix mode
+    height;    // used with matrix mode
   uint8_t
     *pixels,   // Holds color values for each LED (3 bytes each)
     rgb_order, // Color order; RGB vs GRB (or others, if needed in future)

@@ -19,6 +19,18 @@ Adafruit_WS2801::Adafruit_WS2801(uint16_t n, uint8_t dpin, uint8_t cpin, uint8_t
   updatePins(dpin, cpin);
 }
 
+// Constructor for use with a matrix configuration, specify w, h for size of matrix
+// assumes configuration where string starts at coordinate 0,0 and continues to w-1,0, w-1,1
+// and on to 0,1, 0,2 and on to w-1,2 and so on. Snaking back and forth till the end.
+// other function calls with provide access to pixels via an x,y coordinate system
+Adafruit_WS2801::Adafruit_WS2801(uint16_t w, uint16_t h, uint8_t dpin, uint8_t cpin, uint8_t order) {
+  rgb_order = order;
+  alloc(w * h);
+  width = w;
+  height = h;
+  updatePins(dpin, cpin);
+}
+
 // Allocate 3 bytes per pixel, init to RGB 'off' state:
 void Adafruit_WS2801::alloc(uint16_t n) {
   begun   = false;
@@ -159,6 +171,19 @@ void Adafruit_WS2801::setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b)
   }
 }
 
+// Set pixel color from separate 8-bit R, G, B components using x,y coordinate system:
+void Adafruit_WS2801::setPixelColor(uint16_t x, uint16_t y, uint8_t r, uint8_t g, uint8_t b) {
+  boolean evenRow = ((y % 2) == 0);
+  // calculate x offset first
+  uint16_t offset = x % width;
+  if (!evenRow) {
+    offset = (width-1) - offset;
+  }
+  // add y offset
+  offset += y * width;
+  setPixelColor(offset, r, g, b);
+}
+
 // Set pixel color from 'packed' 32-bit RGB value:
 void Adafruit_WS2801::setPixelColor(uint16_t n, uint32_t c) {
   if(n < numLEDs) { // Arrays are 0-indexed, thus NOT '<='
@@ -176,6 +201,19 @@ void Adafruit_WS2801::setPixelColor(uint16_t n, uint32_t c) {
     }
     *p++ = c;         // Blue
   }
+}
+
+// Set pixel color from 'packed' 32-bit RGB value using x,y coordinate system:
+void Adafruit_WS2801::setPixelColor(uint16_t x, uint16_t y, uint32_t c) {
+  boolean evenRow = ((y % 2) == 0);
+  // calculate x offset first
+  uint16_t offset = x % width;
+  if (!evenRow) {
+    offset = (width-1) - offset;
+  }
+  // add y offset
+  offset += y * width;
+  setPixelColor(offset, c);
 }
 
 // Query color from previously-set pixel (returns packed 32-bit RGB value)
