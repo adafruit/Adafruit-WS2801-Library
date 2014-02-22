@@ -1,3 +1,6 @@
+#ifndef __ADAFRUIT_WS2801__
+#define __ADAFRUIT_WS2801__
+
 #if (ARDUINO >= 100)
  #include <Arduino.h>
 #else
@@ -63,3 +66,5 @@ class Adafruit_WS2801 {
     hardwareSPI, // If 'true', using hardware SPI
     begun;       // If 'true', begin() method was previously invoked
 };
+
+#endif // __ADAFRUIT_WS2801__
