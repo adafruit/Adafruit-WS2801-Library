@@ -55,10 +55,13 @@ class Adafruit_WS2801 {
   uint8_t
     *pixels,   // Holds color values for each LED (3 bytes each)
     rgb_order, // Color order; RGB vs GRB (or others, if needed in future)
-    clkpin    , datapin,     // Clock & data pin numbers
+    clkpin    , datapin;     // Clock & data pin numbers
+#ifdef __AVR__
+  uint8_t
     clkpinmask, datapinmask; // Clock & data PORT bitmasks
   volatile uint8_t
     *clkport  , *dataport;   // Clock & data PORT registers
+#endif
   void
     alloc(uint16_t n),
     startSPI(void);
