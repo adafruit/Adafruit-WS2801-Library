@@ -273,6 +273,12 @@ void Adafruit_WS2801::setPixelColor(uint16_t x, uint16_t y, uint32_t c) {
   setPixelColor(offset, c);
 }
 
+// Convert separate R,G,B into packed 32-bit RGB color.
+// Packed format is always RGB, regardless of LED strand color order.
+uint32_t Adafruit_WS2801::Color(uint8_t r, uint8_t g, uint8_t b) {
+  return ((uint32_t)r << 16) | ((uint32_t)g <<  8) | b;
+}
+
 // Query color from previously-set pixel (returns packed 32-bit RGB value)
 uint32_t Adafruit_WS2801::getPixelColor(uint16_t n) {
   if(n < numLEDs) {
