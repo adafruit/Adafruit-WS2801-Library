@@ -48,14 +48,14 @@ static void spi_out(uint8_t n) {
 // Constructor for use with hardware SPI (specific clock/data pins):
 Adafruit_WS2801::Adafruit_WS2801(uint16_t n, uint8_t order) {
   rgb_order = order;
-  alloc(n);
+  alloc(n, 1, n);
   updatePins();
 }
 
 // Constructor for use with arbitrary clock/data pins:
 Adafruit_WS2801::Adafruit_WS2801(uint16_t n, uint8_t dpin, uint8_t cpin, uint8_t order) {
   rgb_order = order;
-  alloc(n);
+  alloc(n, 1, n);
   updatePins(dpin, cpin);
 }
 
@@ -66,15 +66,15 @@ Adafruit_WS2801::Adafruit_WS2801(uint16_t n, uint8_t dpin, uint8_t cpin, uint8_t
 // provide access to pixels via an x,y coordinate system
 Adafruit_WS2801::Adafruit_WS2801(uint16_t w, uint16_t h, uint8_t dpin, uint8_t cpin, uint8_t order) {
   rgb_order = order;
-  alloc(w * h);
-  width  = w;
-  height = h;
+  alloc(w * h, w, h);
   updatePins(dpin, cpin);
 }
 
 // Allocate 3 bytes per pixel, init to RGB 'off' state:
-void Adafruit_WS2801::alloc(uint16_t n) {
-  begun   = false;
+void Adafruit_WS2801::alloc(uint16_t n, uint16_t x, uint16_t y, boolean b) {
+  begun  = b;
+  width  = x;
+  height = y;
   numLEDs = ((pixels = (uint8_t *)calloc(n, 3)) != NULL) ? n : 0;
 }
 
@@ -173,8 +173,15 @@ uint16_t Adafruit_WS2801::numPixels(void) {
 void Adafruit_WS2801::updateLength(uint16_t n) {
   if(pixels != NULL) free(pixels); // Free existing data (if any)
   // Allocate new data -- note: ALL PIXELS ARE CLEARED
-  numLEDs = ((pixels = (uint8_t *)calloc(n, 3)) != NULL) ? n : 0;
   // 'begun' state does not change -- pins retain prior modes
+  alloc(n, 1, n, begun);
+}
+
+// Change strand width and height (see notes with empty constructor, above):
+void Adafruit_WS2801::updateMatrix(uint16_t x, uint16_t y) {
+  updateLength(x * y);
+  width  = x;
+  height = y;
 }
 
 // Change RGB data order (see notes with empty constructor, above):
@@ -289,3 +296,31 @@ uint32_t Adafruit_WS2801::getPixelColor(uint16_t n) {
   return 0; // Pixel # is out of bounds
 }
 
+/* Helper functions */
+
+// Create a 24 bit color value from R,G,B
+uint32_t Adafruit_WS2801::Color(byte r, byte g, byte b)
+{
+  uint32_t c;
+  c = r;
+  c <<= 8;
+  c |= g;
+  c <<= 8;
+  c |= b;
+  return c;
+}
+
+//Input a value 0 to 255 to get a color value.
+//The colours are a transition r - g -b - back to r
+uint32_t  Adafruit_WS2801::Wheel(byte WheelPos)
+{
+  if (WheelPos < 85) {
+    return Color(WheelPos * 3, 255 - WheelPos * 3, 0);
+  } else if (WheelPos < 170) {
+    WheelPos -= 85;
+    return Color(255 - WheelPos * 3, 0, WheelPos * 3);
+  } else {
+    WheelPos -= 170; 
+    return Color(0, WheelPos * 3, 255 - WheelPos * 3);
+  }
+}
