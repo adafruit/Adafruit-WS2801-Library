@@ -72,10 +72,58 @@ Adafruit_WS2801::Adafruit_WS2801(uint16_t w, uint16_t h, uint8_t dpin, uint8_t c
   updatePins(dpin, cpin);
 }
 
-// Allocate 3 bytes per pixel, init to RGB 'off' state:
+// Allocate pixel memory, init to RGB 'off' state:
 void Adafruit_WS2801::alloc(uint16_t n) {
   begun   = false;
-  numLEDs = ((pixels = (uint8_t *)calloc(n * 3, sizeof(uint8_t))) != NULL) ? n : 0;
+  setPixels(n);
+}
+
+void Adafruit_WS2801::dealloc() {
+  if (pixels != NULL) {
+    free(pixels);
+  }
+  pixels = NULL;
+}
+
+// Allocate 3 bytes per pixel
+void Adafruit_WS2801::setPixels(uint16_t n) {
+  if (n > 0) {
+    numLEDs = ((pixels = (uint8_t *)calloc(n * 3, sizeof(uint8_t))) != NULL) ? n : 0;
+  } else {
+    numLEDs = 0;
+    pixels = NULL;
+  }
+}
+
+
+void Adafruit_WS2801::copy(const Adafruit_WS2801 &orig) {
+  // deep copy dynamic memory to prevent double-freeing shared pointers
+  setPixels(orig.numLEDs);
+  memcpy(pixels, orig.pixels, numLEDs * 3);
+
+  // shallow copy the rest
+  width       = orig.width;
+  height      = orig.height;
+  rgb_order   = orig.rgb_order;
+  clkpin      = orig.clkpin;
+  datapin     = orig.datapin;
+  hardwareSPI = orig.hardwareSPI;
+  begun       = orig.begun;
+#ifdef __AVR__
+  clkpinmask  = orig.clkpinmask;
+  datapinmask = orig.datapinmask;
+  clkport     = orig.clkport;
+  dataport    = orig.dataport;
+#endif
+}
+
+Adafruit_WS2801::Adafruit_WS2801(const Adafruit_WS2801 &orig) {
+  copy(orig);
+}
+
+Adafruit_WS2801& Adafruit_WS2801::operator=(const Adafruit_WS2801& orig) {
+  copy(orig);
+  return *this;
 }
 
 // via Michael Vogt/neophob: empty constructor is used when strand length
@@ -94,7 +142,7 @@ Adafruit_WS2801::Adafruit_WS2801(void) {
 
 // Release memory (as needed):
 Adafruit_WS2801::~Adafruit_WS2801(void) {
-  if(pixels) free(pixels);
+  dealloc();
 }
 
 // Activate hard/soft SPI as appropriate:
@@ -171,9 +219,9 @@ uint16_t Adafruit_WS2801::numPixels(void) {
 
 // Change strand length (see notes with empty constructor, above):
 void Adafruit_WS2801::updateLength(uint16_t n) {
-  if(pixels != NULL) free(pixels); // Free existing data (if any)
+  dealloc(); // Free existing data (if any)
   // Allocate new data -- note: ALL PIXELS ARE CLEARED
-  numLEDs = ((pixels = (uint8_t *)calloc(n * 3, sizeof(uint8_t))) != NULL) ? n : 0;
+  setPixels(n);
   // 'begun' state does not change -- pins retain prior modes
 }
 
