@@ -75,7 +75,7 @@ Adafruit_WS2801::Adafruit_WS2801(uint16_t w, uint16_t h, uint8_t dpin, uint8_t c
 // Allocate 3 bytes per pixel, init to RGB 'off' state:
 void Adafruit_WS2801::alloc(uint16_t n) {
   begun   = false;
-  numLEDs = ((pixels = (uint8_t *)calloc(n, 3)) != NULL) ? n : 0;
+  numLEDs = ((pixels = (uint8_t *)calloc(n * 3, sizeof(uint8_t))) != NULL) ? n : 0;
 }
 
 // via Michael Vogt/neophob: empty constructor is used when strand length
@@ -173,7 +173,7 @@ uint16_t Adafruit_WS2801::numPixels(void) {
 void Adafruit_WS2801::updateLength(uint16_t n) {
   if(pixels != NULL) free(pixels); // Free existing data (if any)
   // Allocate new data -- note: ALL PIXELS ARE CLEARED
-  numLEDs = ((pixels = (uint8_t *)calloc(n, 3)) != NULL) ? n : 0;
+  numLEDs = ((pixels = (uint8_t *)calloc(n * 3, sizeof(uint8_t))) != NULL) ? n : 0;
   // 'begun' state does not change -- pins retain prior modes
 }
 
