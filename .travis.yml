@@ -1,8 +1,18 @@
 language: ruby
 sudo: false
-cache:
-  directories:
-    - ~/arduino_ide
+
+# Disabling cache to make speed comparison more fair
+# cache:
+#   directories:
+#     - ~/arduino_ide
+#   files:
+#     - ~/arduino-*-linux64.tar.xz
+
+
+env:
+  global:
+    - ARDUINO_IDE_VERSION="1.8.6"
+
 
 git:
   depth: false
@@ -10,17 +20,19 @@ git:
 
 jobs:
   include:
+    # One job is the CI script defined by Adafruit/travis-ci-arduino
+    #  It's configured here and using .skip files
     -
       name: travis-ci-arduino
-      env:
-        global:
-          - ARDUINO_IDE_VERSION="1.8.6"
       before_install:
         - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
       install:
         - echo "this is the 'install' section of .travis.yml"
       script:
         - build_main_platforms
+
+    # The other job is the CI script defined by ianfixes/arduino_ci
+    #  It's launched here and uses .arduino-ci.yml (if provided) for customization
     -
       name: arduino_ci
       script:
