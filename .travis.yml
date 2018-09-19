@@ -1,22 +1,31 @@
-language: c
+language: ruby
 sudo: false
 cache:
   directories:
     - ~/arduino_ide
-    - ~/.arduino15/packages/
 
 git:
   depth: false
   quiet: true
-env:
-  global:
-     - ARDUINO_IDE_VERSION="1.8.6"
-before_install:
-  - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
-install:
-  - echo "this is the 'install' section of .travis.yml"
-script:
-  - build_main_platforms
+
+jobs:
+  include:
+    -
+      name: travis-ci-arduino
+      env:
+        global:
+          - ARDUINO_IDE_VERSION="1.8.6"
+      before_install:
+        - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
+      install:
+        - echo "this is the 'install' section of .travis.yml"
+      script:
+        - build_main_platforms
+    -
+      name: arduino_ci
+      script:
+        - bundle install
+        - bundle exec arduino_ci_remote.rb
 
 notifications:
   email:
