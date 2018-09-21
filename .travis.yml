@@ -35,6 +35,7 @@ jobs:
     #  It's launched here and uses .arduino-ci.yml (if provided) for customization
     -
       name: arduino_ci
+      os: osx
       script:
         - bundle install
         - bundle exec arduino_ci_remote.rb
