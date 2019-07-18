@@ -25,10 +25,15 @@ class Adafruit_WS2801 {
   Adafruit_WS2801(uint16_t x, uint16_t y, uint8_t dpin, uint8_t cpin, uint8_t order=WS2801_RGB);
   // Use SPI hardware; specific pins only:
   Adafruit_WS2801(uint16_t n, uint8_t order=WS2801_RGB);
+  // Copy constructor; without it, pointers are copied blindly
+  Adafruit_WS2801(const Adafruit_WS2801 &orig);
   // Empty constructor; init pins/strand length/data order later:
   Adafruit_WS2801();
   // Release memory (as needed):
   ~Adafruit_WS2801();
+
+  // assignment operator
+  Adafruit_WS2801& operator=(const Adafruit_WS2801& orig);
 
   void
     begin(void),
@@ -63,7 +68,10 @@ class Adafruit_WS2801 {
     *clkport  , *dataport;   // Clock & data PORT registers
 #endif
   void
-    alloc(uint16_t n),
+    copy(const Adafruit_WS2801 &orig),
+    setPixels(uint16_t n),  // allocate memory
+    alloc(uint16_t n),      // allocate memory and set flags
+    dealloc(),              // deallocate memory
     startSPI(void);
   boolean
     hardwareSPI, // If 'true', using hardware SPI
