@@ -45,6 +45,8 @@ class Adafruit_WS2801 {
     numPixels(void);
   uint32_t
     getPixelColor(uint16_t n);
+   uint32_t *
+    getPixelColor(uint16_t x, uint16_t y);
 
  private:
 

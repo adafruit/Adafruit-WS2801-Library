@@ -285,7 +285,28 @@ uint32_t Adafruit_WS2801::getPixelColor(uint16_t n) {
       ((uint32_t)pixels[ofs] << 16) | ((uint16_t) pixels[ofs + 1] <<  8) | pixels[ofs + 2] :
       (pixels[ofs] <<  8) | ((uint32_t)pixels[ofs + 1] << 16) | pixels[ofs + 2];
   }
-
   return 0; // Pixel # is out of bounds
+}
+// Get pixel color from previously-set pixel (returns packed 32-bit RGB value) using x,y coordinate system:
+uint32_t *Adafruit_WS2801::getPixelColor(uint16_t x, uint16_t y) {
+  static uint32_t result[3];
+  boolean evenRow = ((y % 2) == 0);
+  // calculate x offset first
+  uint16_t ofs = x % width;
+  if (!evenRow) {
+    ofs = (width-1) - ofs;
+  }
+  // add y offset
+  ofs += y * width;
+  result[0]=0;
+  result[1]=0;
+  result[2]=0;
+  if(ofs < numLEDs) {
+    ofs=ofs * 3;
+    result[0]=pixels[ofs];
+    result[1]=pixels[ofs+1];
+    result[2]=pixels[ofs+2];
+  }
+  return result;
 }
 
