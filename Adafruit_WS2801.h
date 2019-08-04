@@ -40,11 +40,22 @@ class Adafruit_WS2801 {
     updatePins(uint8_t dpin, uint8_t cpin), // Change pins, configurable
     updatePins(void), // Change pins, hardware SPI
     updateLength(uint16_t n), // Change strand length
+    updateMatrix(uint16_t x, uint16_t y), // Change strand x by y
     updateOrder(uint8_t order); // Change data order
   uint16_t
     numPixels(void);
   uint32_t
     getPixelColor(uint16_t n);
+
+  /* Helper functions */
+
+  // Create a 24 bit color value from R,G,B
+  static uint32_t Adafruit_WS2801::Color(byte r, byte g, byte b);
+
+  //Input a value 0 to 255 to get a color value.
+  //The colours are a transition r - g -b - back to r
+  static uint32_t  Adafruit_WS2801::Wheel(byte WheelPos);
+
 
  private:
 
@@ -63,7 +74,7 @@ class Adafruit_WS2801 {
     *clkport  , *dataport;   // Clock & data PORT registers
 #endif
   void
-    alloc(uint16_t n),
+    alloc(uint16_t n, uint16_t x, uint16_t y, boolean b = false),
     startSPI(void);
   boolean
     hardwareSPI, // If 'true', using hardware SPI
