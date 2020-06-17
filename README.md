@@ -1,3 +1,5 @@
+# Adafruit WS2801 Library [![Build Status](https://github.com/adafruit/Adafruit-WS2801-Library/workflows/Arduino%20Library%20CI/badge.svg)](https://github.com/adafruit/Adafruit-WS2801-Library/actions)[![Documentation](https://github.com/adafruit/ci-arduino/blob/master/assets/doxygen_badge.svg)](http://adafruit.github.io/Adafruit-WS2801-Library/html/index.html)
+
 Example library for driving Adafruit WS2801 pixels!
 
 
