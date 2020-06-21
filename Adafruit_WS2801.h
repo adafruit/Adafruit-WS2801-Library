@@ -133,6 +133,8 @@ public:
      * @return Returns packed 32-bit RGB value
      */
     getPixelColor(uint16_t n);
+  static uint32_t
+    Color(uint8_t r, uint8_t g, uint8_t b);
 
 private:
   uint16_t numLEDs,
