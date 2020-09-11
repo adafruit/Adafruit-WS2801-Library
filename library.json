@@ -1,0 +1,12 @@
+{
+  "name": "Adafruit-WS2801",
+  "keywords": "rgb, strip, pixel",
+  "description": "Arduino library for controlling strips/pixels using WS2801 driver chips",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/adafruit/Adafruit-WS2801-Library.git"
+  },
+  "frameworks": "arduino",
+  "platforms": "atmelavr"
+}
