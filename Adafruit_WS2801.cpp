@@ -296,7 +296,7 @@ void Adafruit_WS2801::setPixelColor(uint16_t x, uint16_t y, uint32_t c) {
 // Clear all pixels
 void Adafruit_WS2801::clear() {
   if (pixels != NULL) {
-    memset(pixels, 0, numLEDs*3);
+    memset(pixels, 0, numLEDs * 3);
   }
 }
 
