@@ -101,7 +101,11 @@ public:
      */
     setPixelColor(uint16_t x, uint16_t y, uint32_t c),
     /*!
-     * @brief Change pin assignment post-constructor, using arbitrary pins 
+     * @brief Clear the entire string
+     */
+    clear(),
+    /*!
+     * @brief Change pin assignment post-constructor, using arbitrary pins
      * @param dpin Data pin
      * @param cpin Clock pin
      */
