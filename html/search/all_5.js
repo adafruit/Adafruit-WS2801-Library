@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['updatelength',['updateLength',['../class_adafruit___w_s2801.html#a25880ccb35f3026e489989fee5944e53',1,'Adafruit_WS2801']]],
-  ['updateorder',['updateOrder',['../class_adafruit___w_s2801.html#ae18dcd74c7c38c9b8866d149e25c1b8e',1,'Adafruit_WS2801']]],
-  ['updatepins',['updatePins',['../class_adafruit___w_s2801.html#aaa56e7bca28c1f58b3f028b93408e786',1,'Adafruit_WS2801::updatePins(uint8_t dpin, uint8_t cpin)'],['../class_adafruit___w_s2801.html#ae885a7eea9f2df635070425c1148c6f2',1,'Adafruit_WS2801::updatePins(void)']]]
+  ['setpixelcolor',['setPixelColor',['../class_adafruit___w_s2801.html#aae3c8fd1266a0ffd71be2920534ce9ce',1,'Adafruit_WS2801::setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b)'],['../class_adafruit___w_s2801.html#abf1e74103a22de016b0cdf84a921b0e0',1,'Adafruit_WS2801::setPixelColor(uint16_t n, uint32_t c)'],['../class_adafruit___w_s2801.html#a0977f818346abfc6c2477179699e65b4',1,'Adafruit_WS2801::setPixelColor(uint16_t x, uint16_t y, uint8_t r, uint8_t g, uint8_t b)'],['../class_adafruit___w_s2801.html#a9857ad394d082c37f0dbb5b68ebeebfc',1,'Adafruit_WS2801::setPixelColor(uint16_t x, uint16_t y, uint32_t c)']]],
+  ['show',['show',['../class_adafruit___w_s2801.html#a1bf32303318b73a38644c7f211e84691',1,'Adafruit_WS2801']]],
+  ['spi_5fout',['spi_out',['../_adafruit___w_s2801_8cpp.html#a87468b8b3bb1a5b46970c1d06928e506',1,'Adafruit_WS2801.cpp']]]
 ];

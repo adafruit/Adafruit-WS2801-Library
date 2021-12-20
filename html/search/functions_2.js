@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['getpixelcolor',['getPixelColor',['../class_adafruit___w_s2801.html#a3137117bb91312d340c3ae99e95a6d73',1,'Adafruit_WS2801']]]
+  ['clear',['clear',['../class_adafruit___w_s2801.html#aa7f2c9a3b71662147dec0a98312b96be',1,'Adafruit_WS2801']]]
 ];
